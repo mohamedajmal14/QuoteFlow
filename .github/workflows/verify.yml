@@ -1,0 +1,45 @@
+name: Verify QuoteFlow
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Lint, build, frontend, API and PostgreSQL tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: quoteflow_test
+          POSTGRES_USER: quoteflow
+          POSTGRES_PASSWORD: quoteflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U quoteflow -d quoteflow_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://quoteflow:quoteflow@localhost:5432/quoteflow_test
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+      - run: npm test
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm run test:integration

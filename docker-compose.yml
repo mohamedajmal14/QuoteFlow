@@ -1,0 +1,45 @@
+services:
+  database:
+    image: postgres:16-alpine
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    environment:
+      POSTGRES_DB: quoteflow
+      POSTGRES_USER: quoteflow
+      POSTGRES_PASSWORD: quoteflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U quoteflow -d quoteflow"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - quoteflow-data:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      target: api
+    environment:
+      DATABASE_URL: postgresql://quoteflow:quoteflow@database:5432/quoteflow
+      PORT: 3001
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:3001/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      target: web
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  quoteflow-data:

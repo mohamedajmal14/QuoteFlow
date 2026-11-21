@@ -1,0 +1,32 @@
+{
+  "name": "quote-flow-react-node",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A full stack quote pipeline workspace built with React, TypeScript, Node and Express.",
+  "author": "Mohamed Ajmal - A curious developer working with real time projects",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently -n API,WEB -c cyan,magenta \"npm run dev --workspace @quoteflow/api\" \"npm run dev --workspace @quoteflow/web\"",
+    "build": "npm run build --workspace @quoteflow/api && npm run build --workspace @quoteflow/web",
+    "lint": "npm run lint --workspace @quoteflow/web",
+    "test": "npm run test:api && npm run test:web",
+    "test:api": "npm run test --workspace @quoteflow/api",
+    "test:web": "npm run test --workspace @quoteflow/web",
+    "test:web:watch": "npm run test:watch --workspace @quoteflow/web",
+    "test:e2e": "npm run test:e2e --workspace @quoteflow/web",
+    "test:integration": "npm run test:integration --workspace @quoteflow/api",
+    "db:migrate": "npm run db:migrate --workspace @quoteflow/api",
+    "db:seed": "npm run db:seed --workspace @quoteflow/api",
+    "docker:up": "docker compose up --build -d",
+    "docker:down": "docker compose down",
+    "start": "npm run start --workspace @quoteflow/api"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
