@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: quoteflow-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build --workspace @quoteflow/api
+    startCommand: npm run db:migrate --workspace @quoteflow/api && npm run start --workspace @quoteflow/api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_SSL
+        value: "true"
+      - key: KEEP_ALIVE_INTERVAL_MS
+        value: "30000"
+      - key: DATABASE_URL
+        sync: false

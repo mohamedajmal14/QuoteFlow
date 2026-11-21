@@ -23,8 +23,21 @@
     "docker:down": "docker compose down",
     "start": "npm run start --workspace @quoteflow/api"
   },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0",
+    "pg": "^8.22.0",
+    "zod": "^3.24.2"
+  },
   "devDependencies": {
-    "concurrently": "^9.1.2"
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/node": "^22.13.10",
+    "@types/pg": "^8.20.0",
+    "concurrently": "^9.1.2",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3"
   },
   "engines": {
     "node": ">=20"

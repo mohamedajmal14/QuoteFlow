@@ -11,7 +11,7 @@ export const createApp = (store: QuoteStore = new MemoryQuoteStore()) => {
   app.use(cors({ origin: true }));
   app.use(express.json({ limit: "100kb" }));
 
-  app.get("/health", async (_request: Request, response: Response) => {
+  const handleHealth = async (_request: Request, response: Response) => {
     try {
       await store.checkHealth();
       return response.json({
@@ -26,7 +26,10 @@ export const createApp = (store: QuoteStore = new MemoryQuoteStore()) => {
         storage: store.storageMode
       });
     }
-  });
+  };
+
+  app.get("/health", handleHealth);
+  app.get("/api/health", handleHealth);
 
   app.use("/api/quotes", createQuotesRouter(store));
   app.use("/api/analytics", createAnalyticsRouter(store));

@@ -89,10 +89,15 @@ export const createDatabasePool = (connectionString = process.env.DATABASE_URL):
     throw new Error("DATABASE_URL is required when PostgreSQL storage is enabled.");
   }
 
+  const isSsl =
+    process.env.DATABASE_SSL === "true" ||
+    connectionString.includes("sslmode=require") ||
+    connectionString.includes("neon.tech");
+
   return new Pool({
     connectionString,
     max: Number(process.env.DATABASE_POOL_SIZE ?? 10),
-    ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : undefined
+    ssl: isSsl ? { rejectUnauthorized: false } : undefined
   });
 };
 

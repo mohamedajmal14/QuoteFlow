@@ -94,6 +94,18 @@ function App() {
     void refreshWorkspace();
   }, []);
 
+  useEffect(() => {
+    if (isDemoMode) return;
+    const healthUrl = `${import.meta.env.VITE_API_BASE_URL ?? ""}/health`;
+    const pingHealth = () => {
+      fetch(healthUrl).catch(() => {});
+    };
+
+    pingHealth();
+    const interval = setInterval(pingHealth, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
   const filteredQuotes = useMemo(() => {
     const query = search.trim().toLocaleLowerCase();
     return quotes.filter((quote) => {
